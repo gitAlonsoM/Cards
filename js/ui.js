@@ -30,7 +30,11 @@ const ui = {
         score: document.getElementById('score'),
         deleteCardBtn: document.getElementById('delete-card-btn'),
         cardImage: document.getElementById('card-image'),
+        
         cardCategory: document.getElementById('card-category'),
+        codeSnippetContainer: document.getElementById('code-snippet-container'),
+        codeSnippet: document.getElementById('code-snippet'),
+
         cardHintContainer: document.getElementById('card-hint-container'),
         cardHint: document.getElementById('card-hint'),
         questionText: document.getElementById('question-text'),
@@ -140,13 +144,22 @@ const ui = {
         
         const formatText = (text) => text.replace(/`(.*?)`/g, '<code class="bg-gray-200 dark:bg-gray-700 text-red-500 rounded px-1 py-0.5 text-sm">$1</code>');
         this.dom.questionText.innerHTML = formatText(question.question);
+        
+        this.dom.cardImage.classList.add('hidden');
+        this.dom.codeSnippetContainer.classList.add('hidden');
 
-        if (question.imageUrl) {
+        if (question.codeSnippet) {
+            // Handle code snippet display
+            this.dom.codeSnippet.textContent = question.codeSnippet;
+            // Force highlight.js to re-process the element
+            this.dom.codeSnippet.removeAttribute('data-highlighted');
+            hljs.highlightElement(this.dom.codeSnippet);
+            this.dom.codeSnippetContainer.classList.remove('hidden');
+        } else if (question.imageUrl) {
+            // Handle image display
             this.dom.cardImage.classList.remove('hidden');
             this.dom.cardImage.src = question.imageUrl || DEFAULT_IMAGE_URL;
             this.dom.cardImage.onerror = () => { this.dom.cardImage.src = DEFAULT_IMAGE_URL; };
-        } else {
-            this.dom.cardImage.classList.add('hidden');
         }
 
         this.dom.optionsContainer.innerHTML = '';

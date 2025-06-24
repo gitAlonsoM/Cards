@@ -36,6 +36,18 @@ body {
     background-color: #f3f4f6; /* bg-gray-100 for placeholder */
 }
 
+#code-snippet-container pre {
+    background-color: #282c34; /* atom-one-dark background */
+    border-radius: 0.5rem; /* 8px */
+    padding: 1rem; /* 16px */
+    margin-bottom: 1rem; /* 16px */
+    text-align: left;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.5;
+    overflow-x: auto;
+    color: #abb2bf; /* Default text color for the theme */
+}
+
 /* Spinner for AI generation */
 .spinner {
     border: 3px solid rgba(255, 255, 255, 0.3);

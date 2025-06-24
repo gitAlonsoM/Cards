@@ -28,7 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadDecks() {
         const staticDecks = {
             [techDeckData.id]: techDeckData,
-            [nounsDeckData.id]: nounsDeckData
+            [nounsDeckData.id]: nounsDeckData,
+            [plsqlDeckData.id]: plsqlDeckData
         };
         const storedDecks = getAllDecksFromStorage();
         state.allDecks = { ...staticDecks, ...storedDecks };

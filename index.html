@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
 
@@ -58,6 +60,12 @@
                     <i class="fas fa-trash-alt"></i>
                 </button>
                  <img id="card-image" src="" alt="Context Image" class="hidden">
+                
+                 <div id="code-snippet-container" class="hidden">
+                   <pre><code id="code-snippet" class="language-sql"></code></pre>
+               </div>
+                 
+                 
                  <div class="mb-4">
                      <p class="text-sm font-medium text-gray-500 dark:text-gray-300" id="card-category"></p>
                      <p class="text-sm font-normal text-gray-500 dark:text-gray-400 italic flex items-center justify-center gap-2" id="card-hint-container">
@@ -109,9 +117,12 @@
     </div>
 
    <script src="data/tech_deck.js"></script>
+   <script src="data/plsql_deck.js"></script>
     <script src="data/nouns_deck.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/api.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
     <script src="js/tts.js"></script>
     <script src="js/ui.js"></script>
 <script src="js/main.js"></script>
