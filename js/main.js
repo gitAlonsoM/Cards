@@ -29,7 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const staticDecks = {
             [techDeckData.id]: techDeckData,
             [nounsDeckData.id]: nounsDeckData,
-            [plsqlDeckData.id]: plsqlDeckData
+            [plsqlDeckData.id]: plsqlDeckData,
+            [shellDeckData.id]: shellDeckData
+
         };
         const storedDecks = getAllDecksFromStorage();
         state.allDecks = { ...staticDecks, ...storedDecks };
@@ -259,8 +261,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         ui.showScreen('quizContainer'); // This is the only call needed.
         
-        ui.displayQuestion(state.quiz.questions[0], 0, state.quiz.questions.length);
-        ui.dom.score.textContent = `Aciertos: 0`;
+        
+        const currentDeck = state.allDecks[state.currentDeckId];
+        // This is the single, correct call with all required arguments.
+        ui.displayQuestion(state.quiz.questions[0], 0, state.quiz.questions.length, currentDeck);
+        ui.dom.score.textContent = `Aciertos: 0`;
     }
 
     function selectAnswer(selectedButton) {
@@ -289,7 +294,10 @@ document.addEventListener('DOMContentLoaded', () => {
         state.quiz.currentIndex++;
         if (state.quiz.currentIndex < state.quiz.questions.length) {
             state.quiz.hasAnswered = false;
-            ui.displayQuestion(state.quiz.questions[state.quiz.currentIndex], state.quiz.currentIndex, state.quiz.questions.length);
+            // The redundant call that was causing the error has been removed.
+            const currentDeck = state.allDecks[state.currentDeckId];
+            // This is the single, correct call with all required arguments.
+            ui.displayQuestion(state.quiz.questions[state.quiz.currentIndex], state.quiz.currentIndex, state.quiz.questions.length, currentDeck);
         } else {
             showResults();
         }

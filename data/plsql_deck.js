@@ -5,6 +5,7 @@ const plsqlDeckData = {
     description: "Conceptos clave, sintaxis y mejores prácticas para el desarrollo en PL/SQL de Oracle.",
     useImages: false, // This deck does not use images
     isAiGenerated: false,
+    language: 'sql',// Specify language for syntax highlighting
     cards: [
         { category: "Package Structure", hint: "Hint: It acts as the public interface or 'contract' of the package.", question: "Which part of a PL/SQL package declares the public elements accessible by other programs?", options: ["Package Body", "Package Specification", "Anonymous Block"], correctAnswer: "Package Specification", codeSnippet: "PACKAGE XXSBL_MOB_UTIL_PKG IS\n  -- Public procedures and functions are declared here\n  PROCEDURE GET_ORDER_DETAILS(...);\nEND XXSBL_MOB_UTIL_PKG;" },
         { category: "Package Structure", hint: "Hint: It contains the actual implementation and private logic.", question: "Where is the detailed PL/SQL code for procedures and functions implemented?", options: ["Specification", "Header", "Body"], correctAnswer: "Body", codeSnippet: "PACKAGE BODY XXSBL_MOB_UTIL_PKG IS\n  -- Private helper function\n  FUNCTION is_valid(...) RETURN BOOLEAN IS ...\n\n  -- Public procedure implementation\n  PROCEDURE GET_ORDER_DETAILS(...) IS\n  BEGIN\n    -- Logic goes here\n  END GET_ORDER_DETAILS;\nEND XXSBL_MOB_UTIL_PKG;" },

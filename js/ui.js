@@ -127,29 +127,34 @@ const ui = {
         }
     },
 
-    displayQuestion(question, currentIndex, totalQuestions) {
+ 
+         displayQuestion(question, currentIndex, totalQuestions, deck) { // Pass the whole deck object
         const DEFAULT_IMAGE_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1600px-No-Image-Placeholder.svg.png';
         this.dom.progress.textContent = `Pregunta ${currentIndex + 1} de ${totalQuestions}`;
         this.dom.cardCategory.textContent = question.category;
 
-        if(this.dom.cardHintContainer.querySelector('.tts-button')) {
+         if(this.dom.cardHintContainer.querySelector('.tts-button')) {
             this.dom.cardHintContainer.querySelector('.tts-button').remove();
         }
         
-        const hintText = question.hint.replace(/\n/g, '<br>');
+        
+        
+ const hintText = question.hint.replace(/\n/g, '<br>');
         this.dom.cardHint.innerHTML = hintText;
         const lang = question.category.toLowerCase().includes('english') ? 'en-US' : 'es-ES';
-        const speakBtn = createSpeakButton(question.hint, lang); // This will now work
+        const speakBtn = createSpeakButton(question.hint, lang);
         this.dom.cardHintContainer.appendChild(speakBtn);
         
         const formatText = (text) => text.replace(/`(.*?)`/g, '<code class="bg-gray-200 dark:bg-gray-700 text-red-500 rounded px-1 py-0.5 text-sm">$1</code>');
         this.dom.questionText.innerHTML = formatText(question.question);
-        
+
+        // Hide both image and code snippet containers by default
         this.dom.cardImage.classList.add('hidden');
         this.dom.codeSnippetContainer.classList.add('hidden');
 
         if (question.codeSnippet) {
-            // Handle code snippet display
+            // Set the language class dynamically. Defaults to 'plaintext' if not specified.
+            this.dom.codeSnippet.className = `language-${deck.language || 'plaintext'}`;
             this.dom.codeSnippet.textContent = question.codeSnippet;
             // Force highlight.js to re-process the element
             this.dom.codeSnippet.removeAttribute('data-highlighted');
