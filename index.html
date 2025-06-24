@@ -1,0 +1,119 @@
+<!-- index.html -->
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Aprendizaje Progresivo por Mazos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl mx-auto text-center">
+
+        <div id="deck-selection-screen">
+            <h1 class="text-4xl md:text-5xl font-bold mb-8 text-indigo-600 dark:text-indigo-400">Elige tu Mazo</h1>
+            <div id="deck-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            <button id="create-deck-btn" class="mt-8 w-full md:w-auto px-8 py-3 bg-emerald-600 text-white font-bold rounded-lg shadow-lg hover:bg-emerald-700 transition-colors">
+                <i class="fas fa-magic-wand-sparkles mr-2"></i> Crear Mazo con IA
+            </button>
+        </div>
+        
+        <div id="deck-detail-screen" class="hidden">
+            <div class="flex justify-start w-full mb-4">
+                 <button id="back-to-decks-btn" class="text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-200 transition-colors">&larr; Cambiar de Mazo</button>
+            </div>
+            <h1 id="deck-title" class="text-4xl md:text-5xl font-bold mb-4 text-indigo-600 dark:text-indigo-400"></h1>
+            
+            <div id="progress-stats" class="grid grid-cols-3 gap-4 my-8 text-center">
+                </div>
+            <p id="total-progress" class="text-md text-gray-600 dark:text-gray-400 mb-8"></p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                 <button id="start-btn" class="w-full sm:w-auto px-12 py-4 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900 transition-transform transform hover:scale-105">Comenzar Test</button>
+                 <button id="add-cards-ai-btn" class="hidden w-full sm:w-auto px-8 py-4 bg-green-600 text-white font-bold rounded-lg shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105">
+                    <i class="fas fa-plus mr-2"></i> Añadir 30 más
+                </button>
+            </div>
+            
+            <div class="mt-8 flex justify-center items-center gap-6">
+                <button id="reset-progress-btn" class="text-sm text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors">Reiniciar progreso</button>
+                <button id="delete-deck-btn" class="hidden text-sm text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors">Eliminar mazo</button>
+            </div>
+        </div>
+
+        <div id="quiz-container" class="hidden">
+             <div class="flex justify-between items-center mb-4">
+                 <p id="progress" class="text-left text-gray-600 dark:text-gray-400 font-medium"></p>
+                 <p id="score" class="text-right text-indigo-600 dark:text-indigo-400 font-bold text-lg"></p>
+             </div>
+             
+             <div id="question-card" class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full mb-6 text-center relative">
+                <button id="delete-card-btn" title="Eliminar esta tarjeta del mazo" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                 <img id="card-image" src="" alt="Context Image" class="hidden">
+                 <div class="mb-4">
+                     <p class="text-sm font-medium text-gray-500 dark:text-gray-300" id="card-category"></p>
+                     <p class="text-sm font-normal text-gray-500 dark:text-gray-400 italic flex items-center justify-center gap-2" id="card-hint-container">
+                        <span id="card-hint"></span>
+                        </p>
+                 </div>
+                 <hr class="w-1/4 mx-auto mb-4 border-gray-300 dark:border-gray-600">
+                 <p class="text-xl md:text-2xl font-semibold mb-6" id="question-text"></p>
+                 <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+             </div>
+
+             <button id="next-btn" class="w-full px-8 py-3 bg-gray-700 text-white font-bold rounded-lg shadow-md hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">Siguiente Pregunta</button>
+        </div>
+
+        <div id="results-screen" class="hidden">
+            <h2 class="text-3xl font-bold mb-4">¡Ronda Completada!</h2>
+            <p id="final-score" class="text-5xl font-bold my-6 text-indigo-600 dark:text-indigo-400"></p>
+            <p id="final-message" class="text-lg text-gray-600 dark:text-gray-400 mb-8"></p>
+            <button id="restart-btn" class="w-full md:w-auto px-12 py-4 bg-indigo-600 text-white font-bold rounded-lg shadow-lg hover:bg-indigo-700">Siguiente Ronda</button>
+        </div>
+    </div>
+
+    <div id="ai-deck-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md transform transition-all">
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Crear Mazo con IA</h2>
+            <form id="ai-deck-form">
+                <div class="mb-4">
+                    <label for="deck-title-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 text-left">Título del Mazo</label>
+                    <input type="text" id="deck-title-input" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div class="mb-4">
+                    <label for="deck-prompt-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 text-left">Descripción (Prompt)</label>
+                    <textarea id="deck-prompt-input" rows="3" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: Elementos de la cocina en inglés"></textarea>
+                </div>
+                <div class="mb-6">
+                    <label for="api-key-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 text-left">Tu API Key de OpenAI</label>
+                    <input type="password" id="api-key-input" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Pega tu clave sk-proj-... aquí">
+<p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-left">Tu clave se guardará de forma segura en el almacenamiento local de tu navegador.</p>
+</div>
+                <div class="flex items-center justify-end gap-4">
+                    <button type="button" id="cancel-ai-deck-btn" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500">Cancelar</button>
+                    <button type="submit" id="submit-ai-deck-btn" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 flex items-center">
+                        <span id="ai-submit-text">Generar (30 Tarjetas)</span>
+                        <div id="ai-spinner" class="hidden spinner"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+   <script src="data/tech_deck.js"></script>
+    <script src="data/nouns_deck.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/tts.js"></script>
+    <script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

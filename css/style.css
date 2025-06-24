@@ -1,0 +1,65 @@
+/* css\style.css */
+
+body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.option-btn, .deck-card {
+    transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
+}
+
+.option-btn:hover:not(:disabled), .deck-card:hover {
+    transform: translateY(-2px);
+    border-color: #6366f1; /* indigo-500 */
+}
+
+.correct {
+    background-color: #10b981 !important; /* emerald-500 */
+    border-color: #059669 !important; /* emerald-600 */
+    color: white !important;
+}
+
+.incorrect {
+    background-color: #ef4444 !important; /* red-500 */
+    border-color: #dc2626 !important; /* red-600 */
+    color: white !important;
+}
+
+#card-image {
+    width: 100%;
+    height: 220px; /* Fixed height for consistency */
+    object-fit: cover; /* Ensures image covers the area without distortion */
+    border-radius: 0.5rem; /* 8px */
+    margin-bottom: 1rem; /* 16px */
+    background-color: #f3f4f6; /* bg-gray-100 for placeholder */
+}
+
+/* Spinner for AI generation */
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.tts-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6366f1; /* indigo-500 */
+    font-size: 1.1rem;
+    transition: color 0.2s;
+}
+
+.tts-button:hover {
+    color: #4f46e5; /* indigo-600 */
+}
