@@ -1,88 +1,175 @@
-# Proyecto "Cards" - Documentación Técnica
+Claro, aquí tienes el contenido completo y listo para que lo guardes en un archivo llamado README.md.
 
-**Fecha de Documentación:** 22 de junio de 2025
+Markdown
 
-Este documento sirve como un registro del estado actual del proyecto "Cards", su arquitectura y sus flujos de lógica clave. También establece una hoja de ruta (roadmap) para las próximas funcionalidades a implementar, junto con recomendaciones técnicas.
+# Proyecto "Smart Decks": Documentación Técnica y Hoja de Ruta
 
-## 1. Resumen del Proyecto
+**Versión:** 2.0
+**Fecha:** 24 de junio de 2025
 
-"Cards" es una aplicación web de tarjetas de aprendizaje (flashcards) diseñada para ser una herramienta de estudio progresiva y personalizable. Permite a los usuarios estudiar con mazos de tarjetas predefinidos o generar dinámicamente sus propios mazos sobre cualquier tema utilizando la inteligencia artificial de OpenAI. El sistema rastrea el progreso del usuario para optimizar las sesiones de estudio, priorizando las tarjetas que requieren más repaso.
+## 1. Visión General del Proyecto
+
+**Smart Decks** es una aplicación web de aprendizaje progresivo diseñada para crear experiencias de estudio dinámicas y personalizadas. A diferencia de las plataformas de *flashcards* tradicionales, Smart Decks aprovecha la inteligencia artificial para generar mazos de estudio completos sobre cualquier tema, enriquecidos con contenido visual y contextual como fragmentos de código con resaltado de sintaxis e imágenes relevantes.
 
 ## 2. Arquitectura Actual
 
-El proyecto ha sido refactorizado desde un único archivo monolítico a una arquitectura modular basada en componentes de JavaScript, lo que facilita su mantenimiento y escalabilidad.
+La aplicación sigue una arquitectura modular en el *frontend* que separa claramente las responsabilidades, facilitando su mantenimiento y futura expansión.
 
-### Estructura de Archivos
+### Estructura de Archivos Relevante
 
-```
-/CARDS
-├── index.html              // Punto de entrada principal y esqueleto de la UI.
+/
+├── index.html              // Estructura principal del DOM y punto de entrada.
 ├── css/
-│   └── style.css           // Estilos personalizados y de Tailwind.
+│   └── style.css           // Estilos personalizados.
 ├── data/
-│   ├── tech_deck.js        // Datos del mazo estático de Tecnología.
-│   └── nouns_deck.js       // Datos del mazo estático de Sustantivos.
+│   ├── plsql_deck.js       // Mazo estático de ejemplo.
+│   └── ...                 // Otros mazos estáticos.
 └── js/
-    ├── api.js              // Lógica para la comunicación con la API de OpenAI.
-    ├── main.js             // Orquestador principal: estado, eventos y flujos.
-    ├── storage.js          // Gestor del LocalStorage (mazos, progreso, API key).
-    ├── tts.js              // Gestor de la Síntesis de Voz (Text-to-Speech).
-    └── ui.js               // Manipulación del DOM y renderizado de la UI.
-```
+├── api.js              // Módulo de comunicación con la API de OpenAI.
+├── main.js             // Orquestador principal: estado, eventos y flujos de lógica.
+├── storage.js          // Módulo de gestión del LocalStorage.
+├── tts.js              // Módulo de Text-to-Speech para accesibilidad.
+└── ui.js               // Módulo de manipulación del DOM y renderizado de la UI.
 
-### Descripción de Componentes
 
-* **`index.html`**: Contiene la estructura HTML de todas las pantallas de la aplicación (selección de mazo, detalles, quiz, resultados) y los contenedores para los elementos dinámicos. Carga todos los scripts CSS y JS en el orden requerido.
-* **`css/style.css`**: Almacena todas las reglas de estilo.
-* **`data/`**: Este directorio contiene los mazos de tarjetas estáticos. Cada archivo define un objeto JavaScript con la estructura de un mazo.
-* **`js/storage.js`**: Centraliza toda la interacción con el `localStorage` del navegador. Gestiona el guardado y la carga de los mazos generados por el usuario, el progreso de aprendizaje de cada mazo y la API key de OpenAI.
-* **`js/api.js`**: Es responsable de una única tarea: comunicarse con la API de OpenAI. Construye el `prompt` del sistema, envía la solicitud al modelo (`gpt-4o`) y procesa la respuesta JSON para devolver un array de tarjetas.
-* **`js/tts.js`**: Encapsula la funcionalidad de Text-to-Speech, utilizando la API nativa `window.speechSynthesis` del navegador.
-* **`js/ui.js`**: Contiene todo el código que manipula directamente el DOM. Es responsable de mostrar u ocultar pantallas, renderizar las listas de mazos, mostrar las preguntas y actualizar visualmente la interfaz.
-* **`js/main.js`**: Es el cerebro de la aplicación. Inicializa el estado, carga los datos, configura todos los `event listeners` y contiene las funciones de alto nivel que orquestan los flujos de la aplicación (ej. `startGame`, `selectDeck`).
+### Descripción de Módulos Clave
 
-## 3. Flujos de Lógica Clave
+* **`main.js`**: Actúa como el cerebro de la aplicación. Gestiona el estado global (mazos actuales, progreso), inicializa los *event listeners* y orquesta las interacciones entre los demás módulos.
+* **`ui.js`**: Es el único módulo con acceso directo al DOM. Es responsable de renderizar dinámicamente todos los componentes visuales: listas de mazos, tarjetas de preguntas, pantallas de resultados, etc.
+* **`api.js`**: Abstrae toda la comunicación con servicios externos. Actualmente, se encarga de construir los *prompts* y gestionar las llamadas a la API de OpenAI (`gpt-4o`) para la generación de tarjetas.
+* **`storage.js`**: Encapsula toda la lógica de persistencia de datos en el `localStorage` del navegador. Gestiona los mazos creados por el usuario, el progreso de aprendizaje y la API key.
+* **`tts.js`**: Proporciona funcionalidades de accesibilidad mediante la síntesis de voz, permitiendo a los usuarios escuchar el contenido de las tarjetas.
 
-### Generación de Mazos con IA y Gestión de API Key
+## 3. Hoja de Ruta para la Escalabilidad (Roadmap)
 
-Este es el flujo más complejo de la aplicación:
+Para transformar Smart Decks en una plataforma verdaderamente dinámica y escalable, se proponen las siguientes mejoras estratégicas, ordenadas por prioridad.
 
-1.  **Activación**: El usuario hace clic en "Crear Mazo con IA".
-2.  **Carga de API Key**: `main.js` solicita la API key guardada desde `storage.js`.
-3.  **Apertura de Modal**: `ui.js` muestra el modal de creación y, si se encontró una clave, la pre-rellena en el campo correspondiente.
-4.  **Envío de Formulario**: El usuario rellena el título, el prompt y confirma su API key.
-5.  **Guardado de API Key**: Al enviar, `main.js` llama a `storage.js` para guardar la API key en `localStorage`, asegurando su persistencia.
-6.  **Llamada a la API**: `main.js` invoca a `api.generateCardsWithAI`, pasándole el prompt del usuario y la clave.
-7.  **Procesamiento de IA**: `api.js` utiliza el modelo **`gpt-4o`** con un `systemPrompt` avanzado que exige preguntas contextuales y un formato JSON estricto (`{ "type": "json_object" }`).
-8.  **Creación del Mazo**: Una vez recibida y parseada la respuesta de la IA, `main.js` crea un nuevo objeto de mazo, le asigna un ID único y lo añade al estado de la aplicación.
-9.  **Persistencia del Mazo**: El nuevo mazo se guarda en `localStorage` a través de `storage.js`.
-10. **Actualización de UI**: La interfaz se vuelve a renderizar para mostrar el nuevo mazo en la lista.
+### Mejora Fundamental: Refactorización del Modelo de Datos
 
-## 4. Próximos Pasos y Hoja de Ruta (Roadmap)
+El paso más crítico para la escalabilidad es evolucionar la estructura de datos de los mazos y las tarjetas.
 
-Las siguientes funcionalidades son prioritarias para mejorar la robustez y la experiencia de usuario de la aplicación.
+**Modelo Actual (Limitado):**
+```javascript
+// Tarjeta con propiedades opcionales
+{
+  category: "Shell Scripting",
+  question: "...",
+  options: ["...", "..."],
+  correctAnswer: "...",
+  codeSnippet: "chmod +x file.sh" // Opcional
+  // imageUrl: "url.jpg" // Opcional y no usado por la IA
+}
+Modelo Propuesto (Escalable y Flexible):
+La propuesta es unificar el contenido dinámico en un objeto content, cuyo tipo determina cómo debe ser renderizado.
 
-### Mejora 1: Sistema Avanzado de Síntesis de Voz (TTS)
+JavaScript
 
-* **Problema Actual**: La síntesis de voz actual depende de la detección automática de idioma del navegador, que puede ser imprecisa y resultar en una pronunciación deficiente.
-* **Solución Propuesta**: Otorgar al usuario el control sobre el idioma de la locución.
-* **Recomendaciones Técnicas**:
-    1.  **UI (`index.html`)**: Añadir un menú desplegable (`<select>`) en una ubicación visible (ej. en la pantalla de selección de mazo o en un menú de configuración) que permita al usuario elegir un idioma de una lista predefinida (ej. "Inglés (US)", "Español (España)", "Francés").
-    2.  **Persistencia (`storage.js`)**: Crear funciones `saveLanguagePreference(langCode)` y `getLanguagePreference()` para guardar la elección del usuario en `localStorage` (ej. `langCode` podría ser `'en-US'`).
-    3.  **Lógica (`main.js` y `ui.js`)**: Al momento de mostrar una pregunta (`ui.displayQuestion`), leer la preferencia de idioma guardada.
-    4.  **Ejecución (`tts.js`)**: Modificar la función `createSpeakButton(textToSpeak, lang)` para que siempre reciba el código de idioma explícito y lo use al crear el `SpeechSynthesisUtterance`. Esto elimina la ambigüedad y fuerza la pronunciación correcta.
+// Nueva estructura de tarjeta unificada
+{
+  category: "Web Development",
+  hint: "...",
+  question: "Which tag is used to define a hyperlink?",
+  options: ["...", "..."],
+  correctAnswer: "<a>",
+  // El objeto 'content' describe el material de apoyo visual.
+  content: {
+    type: "code", // Tipos posibles: 'code', 'image', 'none'
+    language: "html", // Relevante solo si type es 'code'
+    value: "<a>Hello World</a>"
+  }
+}
+Si el contenido fuera una imagen, la estructura sería:
 
-### Mejora 2: Implementación Universal de Imágenes
+JavaScript
 
-* **Problema Actual**: Solo los mazos estáticos pueden tener imágenes. Los mazos generados por IA carecen de soporte visual, y pedirle a un LLM que proporcione URLs de imágenes directamente es poco fiable y propenso a "alucinaciones" (URLs inventadas o rotas).
-* **Solución Propuesta**: Integrar una API de imágenes de stock para obtener URLs fiables y relevantes para cada tarjeta generada por la IA.
-* **Recomendaciones Técnicas**:
-    1.  **Prompt Engineering (`api.js`)**: Modificar el `systemPrompt` de OpenAI. Además de los campos actuales, se le debe pedir a la IA que genere un campo adicional: `"imageSearchQuery": "a short, accurate, descriptive search term in English"`. Por ejemplo, para una tarjeta sobre una cuchara, el query sería `"wooden spoon"`.
-    2.  **Elección de API de Imágenes**: Seleccionar y obtener una API key gratuita de un servicio de imágenes de stock como **Pexels**, **Unsplash** o **Pixabay**. Estas APIs son fiables y están diseñadas para este propósito.
-    3.  **Lógica de API (`api.js`)**: La función `generateCardsWithAI` debe ser modificada. Después de recibir la respuesta de OpenAI con el contenido de las tarjetas (incluido el `imageSearchQuery`), debe realizar un segundo `fetch`:
-        * Por cada tarjeta, hacer una llamada a la API de imágenes (ej. Pexels) usando el `imageSearchQuery`.
-        * Tomar la URL de la imagen del primer resultado (ej. `response.photos[0].src.medium`).
-        * Añadir esta URL a la tarjeta en un nuevo campo: `"imageUrl": "https://url.from.pexels.api"`.
-    4.  **Manejo de Errores (Robustez)**:
-        * Si la API de imágenes no devuelve resultados para un query, o si la llamada falla, el campo `imageUrl` debe quedar vacío o nulo.
-        * La función `ui.displayQuestion` ya tiene la lógica para mostrar una imagen por defecto si `imageUrl` no existe o está roto. Esta lógica se vuelve ahora aún más importante y debe ser mantenida.
+// ...
+content: {
+    type: "image",
+    value: "photo of a computer screen with HTML code" // Esto sería un 'image search query'
+}
+// ...
+Ventajas de este enfoque:
+
+Escalabilidad: Añadir nuevos tipos de contenido en el futuro (ej. type: 'audio', type: 'diagram') solo requeriría añadir un nuevo case en la lógica de renderizado, sin cambiar el modelo de datos.
+
+Flexibilidad: Un mismo mazo puede contener tarjetas con diferentes tipos de contenido (code, image, none), permitiendo experiencias de aprendizaje mucho más ricas.
+
+Mejora 1: Generación de Contenido Dinámico Multimodal con IA
+Con el nuevo modelo de datos, el siguiente paso es mejorar la inteligencia del módulo api.js.
+
+Plan de Acción:
+
+Ingeniería de Prompts Avanzada (api.js):
+
+Modificar el systemPrompt para que la IA entienda la nueva estructura de la tarjeta, incluyendo el objeto content.
+
+Instruir a la IA para que, dependiendo del contexto de la pregunta, decida el type de contenido más apropiado.
+
+Para código: Pedirle que siempre especifique el campo language (ej. javascript, python, sql, bash).
+
+Para imágenes: Instruir a la IA para que NO genere URLs. En su lugar, debe generar una consulta de búsqueda en inglés, corta y descriptiva, en el campo value. Ejemplo: {"type": "image", "value": "a diagram of the water cycle"}.
+
+Integración de API de Imágenes (api.js):
+
+Obtener una API key gratuita de un servicio como Pexels o Unsplash.
+
+Modificar generateCardsWithAI: después de recibir la respuesta de OpenAI, iterar sobre las tarjetas. Si una tarjeta tiene content.type === 'image', hacer una segunda llamada a la API de Pexels/Unsplash usando content.value como consulta.
+
+Reemplazar el content.value (la consulta de búsqueda) por la URL de la imagen obtenida de la API de imágenes.
+
+Implementar un manejo de errores robusto: si la API de imágenes falla o no devuelve resultados, el content.type debe cambiar a none para esa tarjeta.
+
+Mejora 2: Flexibilidad en la Creación de Mazos
+El usuario debe poder guiar a la IA en el tipo de mazo que desea crear.
+
+Plan de Acción:
+
+Actualizar UI del Modal de Creación (index.html / ui.js):
+
+Añadir opciones en el formulario de "Crear Mazo con IA", como un grupo de checkboxes:
+
+[ ] Incluir fragmentos de código
+
+[ ] Incluir imágenes relevantes
+
+Añadir un campo de texto para especificar los lenguajes de programación deseados si se marca la opción de código.
+
+Adaptación Dinámica del Prompt (main.js / api.js):
+
+Al enviar el formulario, main.js construirá un prompt de usuario más detallado.
+
+Ejemplo: User prompt: "Un mazo sobre los hooks de React. Por favor, incluye fragmentos de código en javascript y también imágenes relevantes cuando sea posible."
+
+Esta información se pasará a generateCardsWithAI, que la incorporará en su lógica para instruir a la IA de manera más precisa.
+
+Mejora 3: Renderizado Dinámico y Escalable de Contenido
+La función ui.displayQuestion debe ser refactorizada para manejar el nuevo modelo de datos.
+
+Plan de Acción:
+
+Refactorizar displayQuestion (ui.js):
+
+Reemplazar la cadena de if/else if actual por una estructura switch basada en question.content.type.
+
+JavaScript
+
+// Lógica de renderizado propuesta en ui.js
+const content = question.content;
+switch (content.type) {
+    case 'code':
+        // Lógica para mostrar el contenedor de código
+        // y usar content.language para el resaltado de sintaxis con highlight.js
+        this.dom.codeSnippet.className = `language-${content.language || 'plaintext'}`;
+        this.dom.codeSnippet.textContent = content.value;
+        hljs.highlightElement(this.dom.codeSnippet);
+        break;
+    case 'image':
+        // Lógica para mostrar el contenedor de imagen
+        // usando content.value (que ahora es una URL)
+        this.dom.cardImage.src = content.value;
+        break;
+    case 'none':
+    default:
+        // Ocultar ambos contenedores (código e imagen)
+        break;
+}
